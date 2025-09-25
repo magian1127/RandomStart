@@ -1220,6 +1220,17 @@ namespace RandomStartMod
                     planetListingHeight += 32f;
                 }
                 listingStandard.Gap();
+                DoSettingToggle(listingStandard.GetRect(24f), "RandomStartMod.UseRPWordType".Translate(), null, ref settings.realisticPlanetsUseWordType);
+                planetListingHeight += 36f;
+                if (settings.realisticPlanetsUseWordType)
+                {
+                    listingStandard.Gap(2f);
+                    Rect rect8 = listingStandard.GetRect(30f);
+                    settings.realisticPlanetsUseWordTypeChance = Widgets.HorizontalSlider(rect8, settings.realisticPlanetsUseWordTypeChance, 0f, 1f, middleAlignment: true, settings.realisticPlanetsUseWordTypeChance.ToStringPercent(), null, null, 0.05f);
+                    planetListingHeight += 32f;
+                }
+                planetListingHeight += 32f;
+                listingStandard.Gap();
             }
 
             if (ModsConfig.IsActive("Woolstrand.RealRuins") || ModsConfig.IsActive("Woolstrand.RealRuins_Steam"))
@@ -1958,6 +1969,19 @@ namespace RandomStartMod
                 {
                     Rect rect9 = listingStandard.GetRect(32f);
                     Widgets.IntRange(rect9, 1623498651, ref settings.randomisePawnAgeRange, 0, 100, Util.GetAgeRangeLabelPercent(settings.randomisePawnAgeRange));
+                    planetListingHeight += 32f;
+                }
+
+                listingStandard.Gap();
+                planetListingHeight += 36f;
+                bool overrideMelanin = !settings.randomisePawnMelanin;
+                DoSettingToggle(listingStandard.GetRect(24f), "RandomStartMod.Characters.OverrideMelanin".Translate(), "RandomStartMod.Characters.OverrideMelaninTooltip".Translate(), ref overrideMelanin);
+                settings.randomisePawnMelanin = !overrideMelanin;
+                planetListingHeight += 36f + Text.LineHeight;
+                if (overrideMelanin)
+                {
+                    Rect rect9 = listingStandard.GetRect(32f);
+                    Widgets.FloatRange(rect9, 1623498652, ref settings.randomisePawnMelaninRange, 0.00f, 1.00f);
                     planetListingHeight += 32f;
                 }
 

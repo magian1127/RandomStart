@@ -124,6 +124,8 @@
 	<RandomStartMod.Characters.OverrideSex>Override Sex</RandomStartMod.Characters.OverrideSex>
 	<RandomStartMod.Characters.OverrideSexTooltip>When enabled, you can specify the gender for your starting colonists instead of using random genders.</RandomStartMod.Characters.OverrideSexTooltip>
 	<RandomStartMod.Characters.AddPawnName>Add Pawn Name</RandomStartMod.Characters.AddPawnName>
+	<RandomStartMod.Characters.OverrideMelanin>Melanin</RandomStartMod.Characters.OverrideMelanin>
+	<RandomStartMod.Characters.OverrideMelaninTooltip>Melanin</RandomStartMod.Characters.OverrideMelaninTooltip>
 
 	<!-- Tooltip Titles -->
 	<RandomStartMod.TooltipTitles.RemoveDefaultResearch>Remove Default Research</RandomStartMod.TooltipTitles.RemoveDefaultResearch>

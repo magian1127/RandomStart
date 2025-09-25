@@ -218,58 +218,62 @@ namespace RandomStartMod
                 || (settings.pawnNames != null && settings.pawnNames.Count > 0)
             )
             {
-                StartingPawnUtility.ClearAllStartingPawns();
-                for (int i = 0; i < 10; i++)
+                if (ModsConfig.IsActive("Lakuna.PrepareModerately") || ModsConfig.IsActive("Lakuna.PrepareModerately_Steam"))
                 {
-                    PawnGenerationRequest request = StartingPawnUtility.DefaultStartingPawnRequest;
-                    if (settings.startingPawnForceViolence)
-                    {
-                        request.MustBeCapableOfViolence = true;
-                    }
-                    if (!settings.randomisePawnAge)
-                    {
-                        request.FixedBiologicalAge = settings.randomisePawnAgeRange.RandomInRange;
-                        request.BiologicalAgeRange = null;
-                        request.ExcludeBiologicalAgeRange = null;
-                    }
-                    if (!settings.randomisePawnSex)
-                    {
-                        request.FixedGender = (Gender)settings.PawnSex;
-                    }
+                    PrepareModeratelyCompat.SetMod();
+                }
 
-                    if (settings.PawnNotDisabledWorkTags)
+                Util.LogMessage("Randomizing starting pawn");
+                Pawn pawn = Find.GameInitData.startingAndOptionalPawns.FirstOrDefault();
+                int randomCount = 0;
+                for (randomCount = 0; randomCount < 100; randomCount++)
+                {
+                    if (settings.PawnNotDisabledWorkTags && pawn.GetDisabledWorkTypes(true).Count > 0)
                     {
-                        StartingPawnUtility.StartingAndOptionalPawnGenerationRequests.Add(request);
-                        StartingPawnUtility.AddNewPawn(i);
-                        int iterations = 0;
-                        while (
-                            Find.GameInitData.startingAndOptionalPawns[i]
-                                .GetDisabledWorkTypes(true)
-                                .Count > 0
-                        )
-                        {
-                            StartingPawnUtility.StartingAndOptionalPawnGenerationRequests.RemoveAt(
-                                i
-                            );
-                            Find.GameInitData.startingAndOptionalPawns.RemoveAt(i);
-                            StartingPawnUtility.StartingAndOptionalPawnGenerationRequests.Add(
-                                request
-                            );
-                            StartingPawnUtility.AddNewPawn(i);
-                            iterations++;
-                            if (iterations > 99)
-                            {
-                                Log.Warning(
-                                    "[Random Start] Could not generate starting pawn without disabled work tags after 100 tries, accepting disabled work tags"
-                                );
-                                break;
-                            }
-                        }
+                        pawn = Util.RandomizePawn();
+                        continue;
                     }
-                    else
+                    if (settings.randomisePawnAge == false && (pawn.ageTracker.AgeBiologicalYears < settings.randomisePawnAgeRange.min || pawn.ageTracker.AgeBiologicalYears > settings.randomisePawnAgeRange.max))
                     {
-                        StartingPawnUtility.StartingAndOptionalPawnGenerationRequests.Add(request);
-                        StartingPawnUtility.AddNewPawn(i);
+                        pawn = Util.RandomizePawn();
+                        continue;
+                    }
+                    if (settings.randomisePawnSex == false && pawn.gender != (Gender)settings.PawnSex)
+                    {
+                        pawn = Util.RandomizePawn();
+                        continue;
+                    }
+                    Util.LogMessage($"Pawn after {randomCount} random");
+                    break;
+                }
+                if (randomCount > 99)
+                {
+                    Util.LogMessage("After 100 random, none pawn the target criteria");
+                }
+                if (settings.randomisePawnMelanin == false && (pawn.story.melanin < settings.randomisePawnMelaninRange.min || pawn.story.melanin > settings.randomisePawnMelaninRange.max))
+                {
+                    var melaninGene = pawn.genes.GenesListForReading.FirstOrDefault(g => g.def.endogeneCategory == EndogeneCategory.Melanin);
+                    pawn.genes.RemoveGene(melaninGene);
+                    pawn.Faction.def.melaninRange = settings.randomisePawnMelaninRange;
+                    GeneDef geneDef = PawnSkinColors.RandomSkinColorGene(pawn);
+                    pawn.genes.AddGene(geneDef, xenogene: false);
+                }
+
+                if (settings.startingPawnForceViolence)
+                {
+                    for (int i = 0; i < Find.GameInitData.startingPawnCount; i++)
+                    {
+                        pawn = Find.GameInitData.startingAndOptionalPawns[i];
+                        randomCount = 0;
+                        for (randomCount = 0; randomCount < 100; randomCount++)
+                        {
+                            if (settings.startingPawnForceViolence && pawn.WorkTagIsDisabled(WorkTags.Violent))
+                            {
+                                pawn = Util.RandomizePawn();
+                                continue;
+                            }
+                            break;
+                        }
                     }
                 }
 
@@ -288,7 +292,7 @@ namespace RandomStartMod
                         pawnIndex++
                     )
                     {
-                        Pawn pawn = Find.GameInitData.startingAndOptionalPawns[pawnIndex];
+                        pawn = Find.GameInitData.startingAndOptionalPawns[pawnIndex];
                         PawnNameData nameData = settings.pawnNames[pawnIndex];
                         NameTriple originalName =
                             pawn.Name as NameTriple ?? new NameTriple("", "", "");

@@ -211,6 +211,8 @@ namespace RandomStartMod
         //Compat
         public int myLittlePlanetSubcount = 10;
 
+        public bool realisticPlanetsUseWordType = false;
+        public float realisticPlanetsUseWordTypeChance = 0.5f;
         public string realisticPlanetsWorldType = "Planets.Vanilla";
         public bool randomiseRealisticPlanets = false;
 
@@ -233,6 +235,8 @@ namespace RandomStartMod
         public bool randomisePawnSex = true;
         public int PawnSex = 0;
         public bool PawnNotDisabledWorkTags = false;
+        public bool randomisePawnMelanin = false;
+        public FloatRange randomisePawnMelaninRange = new FloatRange(0.30f, 0.70f);
 
         public bool limitStartingTileTemperature = false;
         public FloatRange limitStartingTileTemperatureRange = new FloatRange(-10f, 30f);
@@ -264,6 +268,11 @@ namespace RandomStartMod
                 new IntRange(2, 4)
             );
             Scribe_Values.Look(
+                ref randomiseLandmarkDensityRange,
+                "randomiseLandmarkDensityRange",
+                new IntRange(2, 4)
+            );
+            Scribe_Values.Look(
                 ref randomisePollutionRange,
                 "randomisePollutionRange",
                 new FloatRange(0.05f, 0.25f)
@@ -271,6 +280,7 @@ namespace RandomStartMod
             Scribe_Values.Look(ref randomiseRainfall, "randomiseRainfall", true);
             Scribe_Values.Look(ref randomiseTemperature, "randomiseTemperature", true);
             Scribe_Values.Look(ref randomisePopulation, "randomisePopulation", true);
+            Scribe_Values.Look(ref randomiseLandmarkDensity, "randomiseLandmarkDensity", true);
             Scribe_Values.Look(ref randomisePollution, "randomisePollution", true);
             Scribe_Values.Look(ref randomiseSeason, "randomiseSeason", false);
             Scribe_Values.Look(ref randomiseWorldSeed, "randomiseWorldSeed", true);
@@ -544,6 +554,8 @@ namespace RandomStartMod
 
             Scribe_Values.Look(ref myLittlePlanetSubcount, "myLittlePlanetSubcount", 10);
 
+            Scribe_Values.Look(ref realisticPlanetsUseWordType, "realisticPlanetsUseWordType", defaultValue: false);
+            Scribe_Values.Look(ref realisticPlanetsUseWordTypeChance, "realisticPlanetsUseWordTypeChance", 0.5f);
             Scribe_Values.Look(
                 ref realisticPlanetsWorldType,
                 "realisticPlanetsWorldType",
@@ -600,6 +612,8 @@ namespace RandomStartMod
                 "PawnNotDisabledWorkTags",
                 defaultValue: false
             );
+            Scribe_Values.Look(ref randomisePawnMelanin, "randomisePawnMelanin", defaultValue: true);
+            Scribe_Values.Look(ref randomisePawnMelaninRange, "randomisePawnMelaninRange", new FloatRange(0.30f, 0.70f));
 
             Scribe_Values.Look(
                 ref limitStartingTileTemperature,
@@ -703,6 +717,8 @@ namespace RandomStartMod
 
             myLittlePlanetSubcount = 10;
 
+            realisticPlanetsUseWordType = false;
+            realisticPlanetsUseWordTypeChance = 0.5f;
             randomiseRealisticPlanets = false;
             realisticPlanetsWorldType = "Planets.Vanilla";
             realisticPlanetsOceanType = 3;
@@ -838,6 +854,8 @@ namespace RandomStartMod
             randomisePawnSex = true;
             PawnSex = 0;
             PawnNotDisabledWorkTags = false;
+            randomisePawnMelanin = true;
+            randomisePawnMelaninRange = new FloatRange(0.30f, 0.70f);
         }
     }
 }
